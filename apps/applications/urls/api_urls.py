@@ -11,6 +11,7 @@ app_name = 'applications'
 
 router = BulkRouter()
 router.register(r'remote-apps', api.RemoteAppViewSet, 'remote-app')
+router.register(r'databases', api.DataBaseViewSet, 'database')
 
 urlpatterns = [
     path('remote-apps/<uuid:pk>/connection-info/',
@@ -18,7 +19,7 @@ urlpatterns = [
          name='remote-app-connection-info')
 ]
 old_version_urlpatterns = [
-    re_path('(?P<resource>remote-app)/.*', capi.redirect_plural_name_api)
+    re_path('(?P<resource>remote-app|database)/.*', capi.redirect_plural_name_api)
 ]
 
 urlpatterns += router.urls + old_version_urlpatterns

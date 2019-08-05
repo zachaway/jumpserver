@@ -14,8 +14,8 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
         list_serializer_class = AdaptedBulkListSerializer
         fields = [
             'id', 'name', 'login_mode', 'type', 'host', 'port', 'user',
-            'password', 'database', 'comment', 'created_by', 'date_created',
-            'date_updated',
+            'password', 'database', 'created_by', 'date_created',
+            'date_updated', 'comment',
         ]
 
         read_only_fields = [
@@ -24,3 +24,18 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
         }
+
+    @staticmethod
+    def clean_password(validated_data):
+        password = validated_data.get('password')
+        if not password:
+            validated_data.pop('password', None)
+
+    def create(self, validated_data):
+        self.clean_password(validated_data)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        self.clean_password(validated_data)
+        return super().update(instance, validated_data)
+

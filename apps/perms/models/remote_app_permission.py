@@ -12,7 +12,10 @@ __all__ = [
 
 
 class RemoteAppPermission(BasePermission):
-    remote_apps = models.ManyToManyField('applications.RemoteApp', related_name='granted_by_permissions', blank=True, verbose_name=_("RemoteApp"))
+    remote_apps = models.ManyToManyField(
+        'applications.RemoteApp', related_name='granted_by_permissions',
+        blank=True, verbose_name=_("RemoteApp")
+    )
 
     class Meta:
         unique_together = [('org_id', 'name')]

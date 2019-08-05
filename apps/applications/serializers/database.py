@@ -13,8 +13,9 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
         model = Database
         list_serializer_class = AdaptedBulkListSerializer
         fields = [
-            'id', 'name', 'login_mode', 'host', 'port', 'user', 'password',
-            'database', 'comment', 'created_by', 'date_created', 'date_updated',
+            'id', 'name', 'login_mode', 'type', 'host', 'port', 'user',
+            'password', 'database', 'comment', 'created_by', 'date_created',
+            'date_updated',
         ]
 
         read_only_fields = [

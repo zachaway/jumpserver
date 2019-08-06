@@ -16,7 +16,11 @@ router.register(r'databases', api.DataBaseViewSet, 'database')
 urlpatterns = [
     path('remote-apps/<uuid:pk>/connection-info/',
          api.RemoteAppConnectionInfoApi.as_view(),
-         name='remote-app-connection-info')
+         name='remote-app-connection-info'),
+    path('databases/<uuid:pk>/auth-info/',
+         api.DatabaseAuthInfoApi.as_view(),
+         name='database-auth-info'),
+
 ]
 old_version_urlpatterns = [
     re_path('(?P<resource>remote-app|database)/.*', capi.redirect_plural_name_api)

@@ -7,7 +7,7 @@ from common.serializers import AdaptedBulkListSerializer
 from orgs.mixins import BulkOrgResourceModelSerializer
 from ..models import Database
 
-__all__ = ['DatabaseSerializer']
+__all__ = ['DatabaseSerializer', 'DatabaseAuthInfoSerializer']
 
 
 class DatabaseSerializer(BulkOrgResourceModelSerializer):
@@ -45,3 +45,8 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
         self.clean_password(validated_data)
         return super().update(instance, validated_data)
 
+
+class DatabaseAuthInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Database
+        fields = ['password']

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block custom_head_css_js %}
+    <script src="{% static 'js/jquery.form.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="mail-box-header">
+        <table class="table table-striped table-bordered table-hover " id="database_list_table" >
+            <thead>
+            <tr>
+                <th class="text-center">
+                    <input type="checkbox" id="check_all" class="ipt_check_all" >
+                </th>
+                <th class="text-center">{% trans 'Name' %}</th>
+                <th class="text-center">{% trans 'Login mode' %}</th>
+                <th class="text-center">{% trans 'Type' %}</th>
+                <th class="text-center">{% trans 'Host' %}</th>
+                <th class="text-center">{% trans 'Port' %}</th>
+                <th class="text-center">{% trans 'User' %}</th>
+                <th class="text-center">{% trans 'Database' %}</th>
+                <th class="text-center">{% trans 'Comment' %}</th>
+                <th class="text-center">{% trans 'Action' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block custom_foot_js %}
+<script>
+var inited = false;
+var database_table, url;
+
+function initTable() {
+    if (inited){
+        return
+    } else {
+        inited = true;
+    }
+    url = '{% url "api-perms:my-databases" %}';
+    var options = {
+        ele: $('#database_list_table'),
+        columnDefs: [
+            {targets: 1, createdCell: function (td, cellData, rowData) {
+                    var name = htmlEscape(cellData);
+                    $(td).html(name)
+                }},
+            {targets: 2, createdCell: function (td, cellData, rowData) {
+                    $(td).html(rowData.login_mode_display)
+                }},
+            {targets: 3, createdCell: function (td, cellData, rowData) {
+                    $(td).html(rowData.type_display)
+                }},
+            {targets: 4, createdCell: function (td, cellData, rowData) {
+                    var host = htmlEscape(cellData);
+                    $(td).html(host);
+                }},
+            {targets: 6, createdCell: function (td, cellData, rowData) {
+                    var user = htmlEscape(cellData);
+                    $(td).html(user);
+                }},
+            {targets: 7, createdCell: function (td, cellData, rowData) {
+                    var database = htmlEscape(cellData);
+                    $(td).html(database);
+                }},
+            {targets: 8, createdCell: function (td, cellData, rowData) {
+                    var comment = htmlEscape(cellData);
+                    $(td).html(comment);
+                }},
+            {targets: 9, createdCell: function (td, cellData, rowData) {
+                    var conn_btn = '<a href="{% url "luna-view" %}?login_to=' +  cellData +'" class="btn btn-xs btn-primary">{% trans "Connect" %}</a>'.replace("{{ DEFAULT_PK }}", cellData);
+                    $(td).html(conn_btn)
+                }}
+        ],
+        ajax_url: url,
+        columns: [
+            {data: "id"},
+            {data: "name"},
+            {data: "login_mode"},
+            {data: "type"},
+            {data: "host"},
+            {data: "port"},
+            {data: "user"},
+            {data: "database"},
+            {data: "comment", orderable: false},
+            {data: "id", orderable: false}
+        ]
+    };
+    database_table = jumpserver.initServerSideDataTable(options);
+    return database_table
+}
+$(document).ready(function(){
+    initTable();
+})
+</script>
+{% endblock %}

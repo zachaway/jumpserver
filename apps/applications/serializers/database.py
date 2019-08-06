@@ -1,6 +1,8 @@
 # coding: utf-8
 #
 
+from rest_framework import serializers
+
 from common.serializers import AdaptedBulkListSerializer
 from orgs.mixins import BulkOrgResourceModelSerializer
 from ..models import Database
@@ -9,6 +11,9 @@ __all__ = ['DatabaseSerializer']
 
 
 class DatabaseSerializer(BulkOrgResourceModelSerializer):
+    type_display = serializers.ReadOnlyField(source='get_type_display')
+    login_mode_display = serializers.ReadOnlyField(source='get_login_mode_display')
+
     class Meta:
         model = Database
         list_serializer_class = AdaptedBulkListSerializer
@@ -16,6 +21,7 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
             'id', 'name', 'login_mode', 'type', 'host', 'port', 'user',
             'password', 'database', 'created_by', 'date_created',
             'date_updated', 'comment',
+            'type_display', 'login_mode_display'
         ]
 
         read_only_fields = [

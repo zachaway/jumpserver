@@ -55,11 +55,11 @@
                                         </tr>
                                         <tr>
                                             <td>{% trans 'Login mode' %}:</td>
-                                            <td><b>{{ database.login_mode }}</b></td>
+                                            <td><b>{{ database.get_login_mode_display }}</b></td>
                                         </tr>
                                         <tr>
                                             <td>{% trans 'Type' %}:</td>
-                                            <td><b>{{ database.type }}</b></td>
+                                            <td><b>{{ database.get_type_display }}</b></td>
                                         </tr>
                                         <tr>
                                             <td>{% trans 'Host' %}:</td>

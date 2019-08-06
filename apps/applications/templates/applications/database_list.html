@@ -39,6 +39,28 @@ function initTable() {
                 var detail_btn = '<a href="{{ the_url }}">' + cellData + '</a>';
                 $(td).html(detail_btn.replace('{{ DEFAULT_PK }}', rowData.id));
             }},
+            {targets: 2, createdCell: function (td, cellData, rowData) {
+                    $(td).html(rowData.login_mode_display)
+                }},
+            {targets: 3, createdCell: function (td, cellData, rowData) {
+                    $(td).html(rowData.type_display)
+                }},
+            {targets: 4, createdCell: function (td, cellData, rowData) {
+                    var host = htmlEscape(cellData);
+                    $(td).html(host);
+                }},
+            {targets: 6, createdCell: function (td, cellData, rowData) {
+                    var user = htmlEscape(cellData);
+                    $(td).html(user);
+                }},
+            {targets: 7, createdCell: function (td, cellData, rowData) {
+                    var database = htmlEscape(cellData);
+                    $(td).html(database);
+                }},
+            {targets: 8, createdCell: function (td, cellData, rowData) {
+                    var comment = htmlEscape(cellData);
+                    $(td).html(comment);
+                }},
             {targets: 9, createdCell: function (td, cellData, rowData) {
                 var update_btn = '<a href="{% url "applications:database-update" pk=DEFAULT_PK %}" class="btn btn-xs btn-info">{% trans "Update" %}</a>'.replace("{{ DEFAULT_PK }}", cellData);
                 var del_btn = '<a class="btn btn-xs btn-danger m-l-xs btn-delete" data-rid="{{ DEFAULT_PK }}">{% trans "Delete" %}</a>'.replace('{{ DEFAULT_PK }}', cellData);
@@ -55,8 +77,8 @@ function initTable() {
             {data: "port"},
             {data: "user"},
             {data: "database"},
-            {data: "comment"},
-            {data: "id"}
+            {data: "comment", orderable: false},
+            {data: "id", orderable: false}
         ],
         op_html: $('#actions').html()
     };

@@ -43,7 +43,7 @@ class DatabaseCreateView(PermissionsMixin, SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = {
             'app': _('Applications'),
-            'action': _('Create Database'),
+            'action': _('Create database'),
             'type': 'create',
         }
         kwargs.update(context)

@@ -52,7 +52,7 @@ class Database(OrgModelMixin):
         max_length=128, null=True, verbose_name=_('Created by')
     )
     date_created = models.DateTimeField(
-        auto_now_add=True, verbose_name=_('Date Created')
+        auto_now_add=True, verbose_name=_('Date created')
     )
     date_updated = models.DateTimeField(
         auto_now=True, verbose_name=_('Date updated')

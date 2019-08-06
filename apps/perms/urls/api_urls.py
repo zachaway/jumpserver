@@ -95,6 +95,9 @@ database_permission_urlpatterns = [
     path('users/<uuid:pk>/databases/tree/', api.UserGrantedDatabasesAsTreeApi.as_view(), name='user-databases-as-tree'),
     path('users/databases/tree/', api.UserGrantedDatabasesAsTreeApi.as_view(), name='my-databases-as-tree'),
 
+    # 校验用户对Database的权限
+    path('database-permissions/user/validate/', api.ValidateUserDatabasePermissionApi.as_view(), name='validate-user-database-permission'),
+
     # 查询用户组授权的Database
     path('user-groups/<uuid:pk>/databases/', api.UserGroupGrantedDatabasesApi.as_view(), name='user-group=databases'),
 

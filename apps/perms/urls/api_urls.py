@@ -87,6 +87,10 @@ remote_app_permission_urlpatterns = [
 ]
 
 database_permission_urlpatterns = [
+    # 查询用户授权的Database
+    path('users/<uuid:pk>/databases/', api.UserGrantedDatabasesApi.as_view(), name='user-databases'),
+    path('users/databases/', api.UserGrantedDatabasesApi.as_view(), name='my-databases'),
+
     # 用户和Database变更
     path('database-permissions/<uuid:pk>/user/add/', api.DatabasePermissionAddUserApi.as_view(), name='database-permission-add-user'),
     path('database-permissions/<uuid:pk>/user/remove/', api.DatabasePermissionRemoveUserApi.as_view(), name='database-permission-remove-user'),

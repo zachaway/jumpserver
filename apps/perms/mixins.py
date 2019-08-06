@@ -4,7 +4,8 @@
 from orgs.utils import set_to_root_org
 
 __all__ = [
-    'AssetsFilterMixin', 'RemoteAppFilterMixin', 'ChangeOrgIfNeedMixin',
+    'AssetsFilterMixin', 'RemoteAppFilterMixin', 'DatabasesFilterMixin',
+    'ChangeOrgIfNeedMixin',
 ]
 
 
@@ -97,6 +98,40 @@ class RemoteAppFilterMixin(object):
         else:
             reverse = False
 
+        queryset = sorted(
+            queryset, key=lambda x: getattr(x, order_by), reverse=reverse
+        )
+        return queryset
+
+
+class DatabasesFilterMixin(object):
+    """
+    对Database进行过滤（查询、排序）
+    """
+
+    def filter_queryset(self, queryset):
+        queryset = self.search_databases(queryset)
+        queryset = self.sort_databases(queryset)
+        return queryset
+
+    def search_databases(self, queryset):
+        value = self.request.query_params.get('search')
+        if not value:
+            return queryset
+        queryset = [
+            database for database in queryset if value in database.name
+        ]
+        return queryset
+
+    def sort_databases(self, queryset):
+        order_by = self.request.query_params.get('order')
+        if not order_by:
+            order_by = 'name'
+        if order_by.startswith('-'):
+            order_by = order_by.lstrip('-')
+            reverse = True
+        else:
+            reverse = False
         queryset = sorted(
             queryset, key=lambda x: getattr(x, order_by), reverse=reverse
         )

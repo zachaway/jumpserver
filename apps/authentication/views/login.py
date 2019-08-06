@@ -16,7 +16,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.conf import settings
 
-from common.utils import get_request_ip
+from common.utils import get_request_ip, get_validity_of_license
 from users.models import User
 from audits.models import UserLoginLog as LoginLog
 from users.utils import (
@@ -43,15 +43,11 @@ class UserLoginView(FormView):
     key_prefix_captcha = "_LOGIN_INVALID_{}"
 
     def get_template_names(self):
-        template_name = 'authentication/login.html'
-        if not settings.XPACK_ENABLED:
-            return template_name
-
-        from xpack.plugins.license.models import License
-        if not License.has_valid_license():
-            return template_name
-
-        template_name = 'authentication/new_login.html'
+        license_valid = get_validity_of_license()
+        if license_valid:
+            template_name = 'authentication/new_login.html'
+        else:
+            template_name = 'authentication/login.html'
         return template_name
 
     def get(self, request, *args, **kwargs):

@@ -195,3 +195,12 @@ def timeit(func):
         logger.debug(msg)
         return result
     return wrapper
+
+
+def get_validity_of_license():
+    try:
+        from xpack.plugins.license.models import License
+    except ModuleNotFoundError:
+        return False
+    else:
+        return License.has_valid_license()

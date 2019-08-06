@@ -32,4 +32,3 @@ def get_system_user_list_from_cache():
     return cache.get(SYSTEM_USER_CACHE_KEY)
 
 
-

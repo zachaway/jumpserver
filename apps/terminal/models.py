@@ -12,7 +12,9 @@ from django.core.cache import cache
 
 from users.models import User
 from orgs.mixins import OrgModelMixin
-from common.utils import get_command_storage_setting, get_replay_storage_setting
+from common.utils import (
+    get_command_storage_setting, get_replay_storage_setting, get_validity_of_license
+)
 from .backends import get_multi_command_storage
 from .backends.command.models import AbstractSessionCommand
 
@@ -80,7 +82,8 @@ class Terminal(models.Model):
         configs.update(self.get_command_storage_setting())
         configs.update(self.get_replay_storage_setting())
         configs.update({
-            'SECURITY_MAX_IDLE_TIME': settings.SECURITY_MAX_IDLE_TIME
+            'SECURITY_MAX_IDLE_TIME': settings.SECURITY_MAX_IDLE_TIME,
+            'LICENSE_VALID': get_validity_of_license(),
         })
         return configs
 

@@ -214,6 +214,9 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
+        'syslog': {
+            'format': 'jumpserver: %(message)s'
+        },
         'msg': {
             'format': '%(message)s'
         }
@@ -246,19 +249,10 @@ LOGGING = {
             'backupCount': 7,
             'filename': ANSIBLE_LOG_FILE,
         },
-        'gunicorn_file': {
-            'encoding': 'utf8',
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'msg',
-            'maxBytes': 1024*1024*100,
-            'backupCount': 2,
-            'filename': GUNICORN_LOG_FILE,
-        },
-        'gunicorn_console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'msg'
+        'syslog': {
+            'level': 'INFO',
+            'class': 'logging.NullHandler',
+            'formatter': 'syslog'
         },
     },
     'loggers': {
@@ -268,25 +262,17 @@ LOGGING = {
             'level': LOG_LEVEL,
         },
         'django.request': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'file', 'syslog'],
             'level': LOG_LEVEL,
             'propagate': False,
         },
         'django.server': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'file', 'syslog'],
             'level': LOG_LEVEL,
             'propagate': False,
         },
         'jumpserver': {
-            'handlers': ['console', 'file'],
-            'level': LOG_LEVEL,
-        },
-        'jumpserver.users.api': {
-            'handlers': ['console', 'file'],
-            'level': LOG_LEVEL,
-        },
-        'jumpserver.users.view': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'file', 'syslog'],
             'level': LOG_LEVEL,
         },
         'ops.ansible_api': {
@@ -297,16 +283,27 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': "INFO",
         },
-        # 'gunicorn': {
-        #     'handlers': ['gunicorn_console', 'gunicorn_file'],
-        #     'level': 'INFO',
-        # },
+        'jms_audits': {
+            'handlers': ['syslog'],
+            'level': 'INFO'
+        },
         # 'django.db': {
         #     'handlers': ['console', 'file'],
         #     'level': 'DEBUG'
         # }
     }
 }
+
+SYSLOG_ENABLE = False
+
+if CONFIG.SYSLOG_ADDR != '' and len(CONFIG.SYSLOG_ADDR.split(':')) == 2:
+    host, port = CONFIG.SYSLOG_ADDR.split(':')
+    SYSLOG_ENABLE = True
+    LOGGING['handlers']['syslog'].update({
+        'class': 'logging.handlers.SysLogHandler',
+        'facility': CONFIG.SYSLOG_FACILITY,
+        'address': (host, int(port)),
+    })
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

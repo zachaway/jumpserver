@@ -17,11 +17,11 @@ from common.permissions import IsOrgAdminOrAppUser, IsAuditor
 from common.filters import DatetimeRangeFilter
 from orgs.mixins import OrgBulkModelViewSet
 from ..hands import SystemUser
-from ..models import Session
+from ..models import Session, DatabaseSession
 from .. import serializers
 
 
-__all__ = ['SessionViewSet', 'SessionReplayViewSet',]
+__all__ = ['SessionViewSet', 'SessionReplayViewSet', 'DatabaseSessionViewSet']
 logger = get_logger(__name__)
 
 
@@ -59,6 +59,30 @@ class SessionViewSet(OrgBulkModelViewSet):
         if is_uuid(sid):
             _system_user = get_object_or_404(SystemUser, id=sid)
             serializer.validated_data["system_user"] = _system_user.name
+        return super().perform_create(serializer)
+
+
+class DatabaseSessionViewSet(OrgBulkModelViewSet):
+    queryset = DatabaseSession.objects.all()
+    serializer_class = serializers.DatabaseSessionSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (IsOrgAdminOrAppUser | IsAuditor, )
+    filter_fields = [
+        'user', 'database', 'db_host', 'db_name', 'db_user'
+    ]
+    date_range_filter_fields = [
+        ('date_start', ('date_from', 'date_to'))
+    ]
+
+    @property
+    def filter_backends(self):
+        backends = list(GenericAPIView.filter_backends)
+        backends.append(DatetimeRangeFilter)
+        return backends
+
+    def perform_create(self, serializer):
+        if hasattr(self.request.user, 'terminal'):
+            serializer.validated_data["terminal"] = self.request.user.terminal
         return super().perform_create(serializer)
 
 

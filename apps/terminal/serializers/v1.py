@@ -5,7 +5,7 @@ from rest_framework import serializers
 from orgs.mixins import BulkOrgResourceModelSerializer
 from common.mixins import BulkSerializerMixin
 from common.serializers import AdaptedBulkListSerializer
-from ..models import Terminal, Status, Session, Task
+from ..models import Terminal, Status, Session, Task, DatabaseSession
 
 
 class TerminalSerializer(serializers.ModelSerializer):
@@ -37,6 +37,20 @@ class SessionSerializer(BulkOrgResourceModelSerializer):
             "login_from_display", "remote_addr", "is_finished",
             "has_replay", "can_replay", "protocol", "date_start", "date_end",
             "terminal", "command_amount",
+        ]
+
+
+class DatabaseSessionSerializer(BulkOrgResourceModelSerializer):
+    command_amount = serializers.IntegerField(read_only=True)
+    org_id = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = DatabaseSession
+        list_serializer_class = AdaptedBulkListSerializer
+        fields = [
+            'id', 'user', 'database', 'db_host', 'db_name', 'db_user',
+            'login_from_display', 'remote_addr', 'is_finished', 'has_replay',
+            'date_start', 'date_end', 'terminal', 'command_amount'
         ]
 
 

@@ -18,12 +18,18 @@ urlpatterns = [
     path('web-terminal/', views.WebTerminalView.as_view(), name='web-terminal'),
     path('web-sftp/', views.WebSFTPView.as_view(), name='web-sftp'),
 
-    # Session view
-    path('session-online/', views.SessionOnlineListView.as_view(), name='session-online-list'),
-    path('session-offline/', views.SessionOfflineListView.as_view(), name='session-offline-list'),
-    path('session/<uuid:pk>/', views.SessionDetailView.as_view(), name='session-detail'),
+    # Asset session view
+    path('asset/session-online/', views.SessionOnlineListView.as_view(), name='session-online-list'),
+    path('asset/session-offline/', views.SessionOfflineListView.as_view(), name='session-offline-list'),
+    path('asset/session/<uuid:pk>/', views.SessionDetailView.as_view(), name='session-detail'),
+
+    # Databases session view
+    path('database/session-online/', views.DatabaseSessionOnlineListView.as_view(), name='database-session-online-list'),
+    path('database/session-offline/', views.DatabaseSessionOfflineListView.as_view(), name='database-session-offline-list'),
+    path('database/session/<uuid:pk>/', views.DatabaseSessionDetailView.as_view(), name='database-session-detail'),
 
     # Command view
-    path('command/', views.CommandListView.as_view(), name='command-list'),
+    path('asset/command/', views.CommandListView.as_view(), name='command-list'),
+    # path('database/command/', views.DatabaseCommandListView.as_view(), name='database-command-list'),
 
 ]

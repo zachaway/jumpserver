@@ -14,32 +14,18 @@ from common.permissions import IsOrgAdminOrAppUser, IsAuditor
 from common.utils import get_logger
 from ..backends import (
     get_command_storage, get_multi_command_storage,
-    SessionCommandSerializer,
+    SessionCommandSerializer, DatabaseSessionCommandSerializer
 )
 
 logger = get_logger(__name__)
-__all__ = ['CommandViewSet', 'CommandExportApi']
+__all__ = ['CommandViewSet', 'CommandExportApi', 'DatabaseCommandViewSet']
 
 
-class CommandQueryMixin:
+class BaseCommandQueryMixin:
     command_store = get_command_storage()
     pagination_class = LimitOffsetPagination
     permission_classes = [IsOrgAdminOrAppUser | IsAuditor]
-    filter_fields = [
-        "asset", "system_user", "user", "session",
-    ]
     default_days_ago = 5
-
-    def get_queryset(self):
-        date_from, date_to = self.get_date_range()
-        q = self.request.query_params
-        multi_command_storage = get_multi_command_storage()
-        queryset = multi_command_storage.filter(
-            date_from=date_from, date_to=date_to, input=q.get("input"),
-            user=q.get("user"), asset=q.get("asset"),
-            system_user=q.get("system_user")
-        )
-        return queryset
 
     def filter_queryset(self, queryset):
         return queryset
@@ -60,21 +46,49 @@ class CommandQueryMixin:
         return float(date_from_st), float(date_to_st)
 
 
-class CommandViewSet(CommandQueryMixin, viewsets.ModelViewSet):
-    """接受app发送来的command log, 格式如下
-    {
-        "user": "admin",
-        "asset": "localhost",
-        "system_user": "web",
-        "session": "xxxxxx",
-        "input": "whoami",
-        "output": "d2hvbWFp",  # base64.b64encode(s)
-        "timestamp": 1485238673.0
-    }
-
+class CommandQueryMixin(BaseCommandQueryMixin):
     """
+    Asset Command Query Mixin
+    """
+    filter_fields = [
+        "user", "asset", "system_user", "session",
+    ]
+
+    def get_queryset(self):
+        date_from, date_to = self.get_date_range()
+        q = self.request.query_params
+        multi_command_storage = get_multi_command_storage()
+        queryset = multi_command_storage.filter(
+            date_from=date_from, date_to=date_to, input=q.get("input"),
+            user=q.get("user"), asset=q.get("asset"),
+            system_user=q.get("system_user")
+        )
+        return queryset
+
+
+class DatabaseCommandQueryMixin(BaseCommandQueryMixin):
+    """
+    Database Command Query Mixin
+    """
+    filter_fields = [
+        "user", "database", "db_host", "db_name", "db_user"
+    ]
+
+    def get_queryset(self):
+        date_from, date_to = self.get_date_range()
+        q = self.request.query_params
+        multi_command_storage = get_multi_command_storage()
+        queryset = multi_command_storage.filter(
+            date_from=date_from, date_to=date_to, input=q.get("input"),
+            user=q.get("user"), database=q.get("database"),
+            db_host=q.get("db_host"), db_name=q.get("db_name"),
+            db_user=q.get("db_user")
+        )
+        return queryset
+
+
+class BaseCommandViewSet(viewsets.ModelViewSet):
     command_store = get_command_storage()
-    serializer_class = SessionCommandSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, many=True)
@@ -88,6 +102,31 @@ class CommandViewSet(CommandQueryMixin, viewsets.ModelViewSet):
             msg = "Command not valid: {}".format(serializer.errors)
             logger.error(msg)
             return Response({"msg": msg}, status=401)
+
+
+class CommandViewSet(CommandQueryMixin, BaseCommandViewSet):
+    """
+    Asset Command ViewSet
+    接受app发送来的command log, 格式如下
+    {
+        "user": "admin",
+        "asset": "localhost",
+        "system_user": "web",
+        "session": "xxxxxx",
+        "input": "whoami",
+        "output": "d2hvbWFp",  # base64.b64encode(s)
+        "timestamp": 1485238673.0
+    }
+
+    """
+    serializer_class = SessionCommandSerializer
+
+
+class DatabaseCommandViewSet(DatabaseCommandQueryMixin, BaseCommandViewSet):
+    """
+    Database Command ViewSet
+    """
+    serializer_class = DatabaseSessionCommandSerializer
 
 
 class CommandExportApi(CommandQueryMixin, generics.ListAPIView):
@@ -108,3 +147,5 @@ class CommandExportApi(CommandQueryMixin, generics.ListAPIView):
         filename = 'command-report-{}.html'.format(int(time.time()))
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
         return response
+
+

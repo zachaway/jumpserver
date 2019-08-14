@@ -68,7 +68,8 @@ class DatabaseSessionViewSet(OrgBulkModelViewSet):
     pagination_class = LimitOffsetPagination
     permission_classes = (IsOrgAdminOrAppUser | IsAuditor, )
     filter_fields = [
-        'user', 'database', 'db_host', 'db_name', 'db_user'
+        'user', 'database', 'db_host', 'db_name', 'db_user',
+        'is_finished', 'terminal', 'remote_addr'
     ]
     date_range_filter_fields = [
         ('date_start', ('date_from', 'date_to'))

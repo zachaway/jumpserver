@@ -1,43 +1,29 @@
 # -*- coding: utf-8 -*-
 #
-
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView
 from django.views.generic.edit import SingleObjectMixin
-from django.utils.translation import ugettext as _
-from django.utils import timezone
-from django.conf import settings
-
 from common.permissions import PermissionsMixin, IsOrgAdmin, IsAuditor
-from common.mixins import DatetimeSearchMixin
-from ..models import Session, Command, Terminal
 from ..backends import get_multi_command_storage
-from .. import utils
+
+
+from django.utils.translation import ugettext as _
+
+from ..models import DatabaseSession
+from .base_session import BaseSessionListView
 
 
 __all__ = [
-    'SessionOnlineListView', 'SessionOfflineListView',
-    'SessionDetailView',
+    'DatabaseSessionOnlineListView', 'DatabaseSessionOfflineListView',
+    'DatabaseSessionDetailView'
 ]
 
 
-class SessionListView(PermissionsMixin, TemplateView):
-    model = Session
-    template_name = 'terminal/session_list.html'
-    date_from = date_to = None
-    permission_classes = [IsOrgAdmin | IsAuditor]
-    default_days_ago = 5
-
-    def get_context_data(self, **kwargs):
-        now = timezone.now()
-        context = {
-            'date_from': now - timezone.timedelta(days=self.default_days_ago),
-            'date_to': now,
-        }
-        kwargs.update(context)
-        return super().get_context_data(**kwargs)
+class DatabaseSessionListView(BaseSessionListView):
+    model = DatabaseSession
+    template_name = 'terminal/database_session_list.html'
 
 
-class SessionOnlineListView(SessionListView):
+class DatabaseSessionOnlineListView(DatabaseSessionListView):
     def get_context_data(self, **kwargs):
         context = {
             'app': _('Sessions'),
@@ -48,7 +34,7 @@ class SessionOnlineListView(SessionListView):
         return super().get_context_data(**kwargs)
 
 
-class SessionOfflineListView(SessionListView):
+class DatabaseSessionOfflineListView(DatabaseSessionListView):
     def get_context_data(self, **kwargs):
         context = {
             'app': _('Sessions'),
@@ -59,9 +45,9 @@ class SessionOfflineListView(SessionListView):
         return super().get_context_data(**kwargs)
 
 
-class SessionDetailView(SingleObjectMixin, PermissionsMixin, ListView):
-    template_name = 'terminal/session_detail.html'
-    model = Session
+class DatabaseSessionDetailView(SingleObjectMixin, PermissionsMixin, ListView):
+    template_name = 'terminal/database_session_detail.html'
+    model = DatabaseSession
     object = None
     permission_classes = [IsOrgAdmin | IsAuditor]
 
@@ -80,4 +66,3 @@ class SessionDetailView(SingleObjectMixin, PermissionsMixin, ListView):
         }
         kwargs.update(context)
         return super().get_context_data(**kwargs)
-

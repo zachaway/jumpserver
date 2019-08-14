@@ -1,6 +1,8 @@
 from importlib import import_module
 from django.conf import settings
-from .command.serializers import SessionCommandSerializer
+from .command.serializers import (
+    SessionCommandSerializer, DatabaseSessionCommandSerializer
+)
 
 from common import utils
 

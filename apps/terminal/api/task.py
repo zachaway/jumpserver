@@ -6,7 +6,7 @@ from rest_framework_bulk import BulkModelViewSet
 
 from common.utils import get_object_or_none
 from common.permissions import IsOrgAdminOrAppUser
-from ..models import Session, Task
+from ..models import Session, Task, DatabaseSession
 from .. import serializers
 
 
@@ -28,6 +28,8 @@ class KillSessionAPI(APIView):
         validated_session = []
         for session_id in request.data:
             session = get_object_or_none(Session, id=session_id)
+            if not session:
+                session = get_object_or_none(DatabaseSession, id=session_id)
             if session and not session.is_finished:
                 validated_session.append(session_id)
                 self.model.objects.create(

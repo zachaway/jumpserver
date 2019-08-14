@@ -71,6 +71,9 @@ class DatabaseSession(BaseSession):
     db_name = models.CharField(max_length=128, blank=True, null=True, verbose_name=_('Database name'))
     db_user = models.CharField(max_length=32, blank=True, null=True, verbose_name=_('Database user'))
 
+    def can_replay(self):
+        return self.has_replay
+
     class Meta:
         db_table = "terminal_database_session"
         ordering = ["-date_start"]

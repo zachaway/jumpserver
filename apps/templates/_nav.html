@@ -59,9 +59,22 @@
         <i class="fa fa-rocket" style="width: 14px"></i> <span class="nav-label">{% trans 'Sessions' %}</span><span class="fa arrow"></span>
     </a>
     <ul class="nav nav-second-level">
-        <li id="session-online"><a href="{% url 'terminal:session-online-list' %}">{% trans 'Session online' %}</a></li>
-        <li id="session-offline"><a href="{% url 'terminal:session-offline-list' %}">{% trans 'Session offline' %}</a></li>
-        <li id="command"><a href="{% url 'terminal:command-list' %}">{% trans 'Commands' %}</a></li>
+        <li id="asset">
+            <a href="#"><span class="nav-label">{% trans 'Asset sessions' %}</span><span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li id="session-online"><a href="{% url 'terminal:session-online-list' %}">{% trans 'Session online' %}</a></li>
+                <li id="session-offline"><a href="{% url 'terminal:session-offline-list' %}">{% trans 'Session offline' %}</a></li>
+                <li id="command"><a href="{% url 'terminal:command-list' %}">{% trans 'Commands' %}</a></li>
+            </ul>
+        </li>
+        <li id="database">
+            <a href="#"><span class="nav-label">{% trans 'Database sessions' %}</span><span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li id="session-online"><a href="{% url 'terminal:database-session-online-list' %}">{% trans 'Session online' %}</a></li>
+                <li id="session-offline"><a href="{% url 'terminal:database-session-offline-list' %}">{% trans 'Session offline' %}</a></li>
+{#                <li id="command"><a href="{% url 'terminal:command-list' %}">{% trans 'Commands' %}</a></li>#}
+            </ul>
+        </li>
         <li>
             <a href="{% url 'terminal:web-terminal' %}" target="_blank">
             <span class="nav-label">{% trans 'Web terminal' %}</span>

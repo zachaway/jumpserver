@@ -50,7 +50,7 @@ class DatabaseSessionSerializer(BulkOrgResourceModelSerializer):
         fields = [
             'id', 'user', 'database', 'db_host', 'db_name', 'db_user',
             'login_from_display', 'remote_addr', 'is_finished', 'has_replay',
-            'date_start', 'date_end', 'terminal', 'command_amount'
+            'can_replay', 'date_start', 'date_end', 'terminal', 'command_amount'
         ]
 
 

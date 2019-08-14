@@ -146,7 +146,7 @@ function activeNav() {
     if (app === ''){
         $('#index').addClass('active');
     }
-    else if (app === 'xpack' && resource === 'cloud') {
+    else if ((app === 'xpack' && resource === 'cloud') || (app === 'terminal' && (resource === 'asset' || resource === 'database'))) {
         var item = url_array[3];
         $("#" + app).addClass('active');
         $('#' + app + ' #' + resource).addClass('active');

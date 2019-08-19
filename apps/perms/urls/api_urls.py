@@ -10,6 +10,7 @@ app_name = 'perms'
 router = routers.DefaultRouter()
 router.register('asset-permissions', api.AssetPermissionViewSet, 'asset-permission')
 router.register('remote-app-permissions', api.RemoteAppPermissionViewSet, 'remote-app-permission')
+router.register('database-permissions', api.DatabasePermissionViewSet, 'database-permission')
 
 
 asset_permission_urlpatterns = [
@@ -85,11 +86,15 @@ remote_app_permission_urlpatterns = [
     path('remote-app-permissions/<uuid:pk>/remote-app/add/', api.RemoteAppPermissionAddRemoteAppApi.as_view(), name='remote-app-permission-add-remote-app'),
 ]
 
+database_permission_urlpatterns = [
+
+]
+
 old_version_urlpatterns = [
     re_path('(?P<resource>user|user-group|asset-permission|remote-app-permission)/.*', capi.redirect_plural_name_api)
 ]
 
-urlpatterns = asset_permission_urlpatterns + remote_app_permission_urlpatterns + old_version_urlpatterns
+urlpatterns = asset_permission_urlpatterns + remote_app_permission_urlpatterns + database_permission_urlpatterns + old_version_urlpatterns
 
 urlpatterns += router.urls
 

@@ -87,11 +87,14 @@ remote_app_permission_urlpatterns = [
 ]
 
 database_permission_urlpatterns = [
-
+    path('database-permissions/<uuid:pk>/user/add/', api.DatabasePermissionAddUserApi.as_view(), name='database-permission-add-user'),
+    path('database-permissions/<uuid:pk>/user/remove/', api.DatabasePermissionRemoveUserApi.as_view(), name='database-permission-remove-user'),
+    path('database-permissions/<uuid:pk>/database/add/', api.DatabasePermissionAddDatabaseApi.as_view(), name='database-permission-add-database'),
+    path('database-permissions/<uuid:pk>/database/remove/', api.DatabasePermissionRemoveDatabaseApi.as_view(), name='database-permission-remove-database'),
 ]
 
 old_version_urlpatterns = [
-    re_path('(?P<resource>user|user-group|asset-permission|remote-app-permission)/.*', capi.redirect_plural_name_api)
+    re_path('(?P<resource>user|user-group|asset-permission|remote-app-permission|database-permission)/.*', capi.redirect_plural_name_api)
 ]
 
 urlpatterns = asset_permission_urlpatterns + remote_app_permission_urlpatterns + database_permission_urlpatterns + old_version_urlpatterns

@@ -7,3 +7,4 @@ from .user_group_permission import *
 from .remote_app_permission import *
 from .user_remote_app_permission import *
 from .database_permission import *
+from .user_database_permission import *

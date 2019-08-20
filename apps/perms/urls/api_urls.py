@@ -87,6 +87,9 @@ remote_app_permission_urlpatterns = [
 ]
 
 database_permission_urlpatterns = [
+    path('users/<uuid:pk>/databases/', api.UserGrantedDatabasesApi.as_view(), name='user-databases'),
+    path('users/databases/', api.UserGrantedDatabasesApi.as_view(), name='my-databases'),
+
     path('database-permissions/<uuid:pk>/user/add/', api.DatabasePermissionAddUserApi.as_view(), name='database-permission-add-user'),
     path('database-permissions/<uuid:pk>/user/remove/', api.DatabasePermissionRemoveUserApi.as_view(), name='database-permission-remove-user'),
     path('database-permissions/<uuid:pk>/database/add/', api.DatabasePermissionAddDatabaseApi.as_view(), name='database-permission-add-database'),

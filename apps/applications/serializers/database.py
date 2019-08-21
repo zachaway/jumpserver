@@ -1,11 +1,13 @@
 # coding: utf-8
 #
 
+from rest_framework import serializers
+
 from common.serializers import AdaptedBulkListSerializer
 from orgs.mixins import BulkOrgResourceModelSerializer
 from ..models import Database
 
-__all__ = ["DatabaseSerializer"]
+__all__ = ["DatabaseSerializer", "DatabaseAuthInfoSerializer"]
 
 
 class DatabaseSerializer(BulkOrgResourceModelSerializer):
@@ -23,3 +25,9 @@ class DatabaseSerializer(BulkOrgResourceModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
         }
+
+
+class DatabaseAuthInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Database
+        fields = ['password']

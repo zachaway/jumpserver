@@ -2,13 +2,14 @@
 #
 
 from django.shortcuts import get_object_or_404
-
+from rest_framework.views import APIView, Response
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
+
 from common.tree import TreeNodeSerializer
 from common.permissions import IsOrgAdminOrAppUser, IsValidUser
 
-from ..hands import User, DatabaseSerializer
+from ..hands import User, Database, DatabaseSerializer
 from ..utils import (
     DatabasePermissionUtil,
     construct_databases_tree_root,
@@ -16,7 +17,10 @@ from ..utils import (
 )
 from ..mixins import DatabaseFilterMixin
 
-__all__ = ['UserGrantedDatabasesApi', 'UserGrantedDatabasesAsTreeApi']
+__all__ = [
+    'UserGrantedDatabasesApi', 'UserGrantedDatabasesAsTreeApi',
+    'ValidateUserDatabasePermissionApi'
+]
 
 
 class UserGrantedDatabasesApi(DatabaseFilterMixin, ListAPIView):
@@ -73,3 +77,20 @@ class UserGrantedDatabasesAsTreeApi(ListAPIView):
         if self.kwargs.get('pk') is None:
             self.permission_classes = (IsValidUser,)
         return super().get_permissions()
+
+
+class ValidateUserDatabasePermissionApi(APIView):
+    permission_classes = (IsOrgAdminOrAppUser,)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get('user_id', '')
+        database_id = request.query_params.get('database_id', '')
+        user = get_object_or_404(User, id=user_id)
+        database = get_object_or_404(Database, id=database_id)
+
+        util = DatabasePermissionUtil(user)
+        databases = util.get_databases()
+        if database not in databases:
+            return Response({'msg': False}, status=403)
+
+        return Response({'msg': True}, status=200)

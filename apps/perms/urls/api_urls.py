@@ -95,6 +95,8 @@ database_permission_urlpatterns = [
 
     path('user-groups/<uuid:pk>/databases/', api.UserGroupGrantedDatabasesApi.as_view(), name='user-group-databases'),
 
+    path('database-permissions/user/validate/', api.ValidateUserDatabasePermissionApi.as_view(), name='validate-user-database-permission'),
+
     path('database-permissions/<uuid:pk>/user/add/', api.DatabasePermissionAddUserApi.as_view(), name='database-permission-add-user'),
     path('database-permissions/<uuid:pk>/user/remove/', api.DatabasePermissionRemoveUserApi.as_view(), name='database-permission-remove-user'),
     path('database-permissions/<uuid:pk>/database/add/', api.DatabasePermissionAddDatabaseApi.as_view(), name='database-permission-add-database'),

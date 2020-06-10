@@ -10,26 +10,7 @@
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="panel-options">
-                        <ul class="nav nav-tabs">
-                            <li>
-                                <a href="{% url 'settings:basic-setting' %}" class="text-center"><i class="fa fa-cubes"></i> {% trans 'Basic setting' %}</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings:email-setting' %}"  class="text-center"><i class="fa fa-envelope"></i> {% trans 'Email setting' %} </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings:email-content-setting' %}"  class="text-center"><i class="fa fa-file-text"></i> {% trans 'Email content setting' %} </a>
-                            </li>
-                            <li class="active">
-                                <a href="{% url 'settings:ldap-setting' %}" class="text-center"><i class="fa fa-archive"></i> {% trans 'LDAP setting' %} </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings:terminal-setting' %}" class="text-center"><i class="fa fa-hdd-o"></i> {% trans 'Terminal setting' %} </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings:security-setting' %}" class="text-center"><i class="fa fa-lock"></i> {% trans 'Security setting' %} </a>
-                            </li>
-                        </ul>
+                        {% include 'settings/_setting_tabs.html' %}
                     </div>
                     <div class="tab-content">
                         <div class="col-sm-12" style="padding-left:0">
@@ -60,9 +41,10 @@
                                     {% endfor %}
                                     <div class="hr-line-dashed"></div>
                                     <div class="form-group">
-                                        <div class="col-sm-4 col-sm-offset-2">
+                                        <div class="col-sm-9 col-sm-offset-2">
                                             <button class="btn btn-default" type="reset"> {% trans 'Reset' %}</button>
-                                            <button class="btn btn-default btn-test" type="button"> {% trans 'Test connection' %}</button>
+                                            <button class="btn btn-default btn-test-config" type="button"> {% trans 'Test connection' %}</button>
+                                            <button class="btn btn-default btn-test-login" type="button"> {% trans 'Test login' %}</button>
                                             <button class="btn btn-default sync_button " data-toggle="modal" data-target="#ldap_list_users_modal" type="button">{% trans 'Bulk import' %}</button>
                                             <button id="submit_button" class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
                                         </div>
@@ -77,27 +59,28 @@
         </div>
     </div>
     {% include 'settings/_ldap_list_users_modal.html' %}
+    {% include 'settings/_ldap_test_user_login_modal.html' %}
 {% endblock %}
 {% block custom_foot_js %}
 <script>
 $(document).ready(function () {
 
 })
-.on("click", ".btn-test", function () {
+.on("click", ".btn-test-config", function () {
     var data = {};
     var form = $("form").serializeArray();
     $.each(form, function (i, field) {
         data[field.name] = field.value;
     });
 
-    var the_url = "{% url 'api-settings:ldap-testing' %}";
+    var the_url = "{% url 'api-settings:ldap-testing-config' %}";
 
     function error(message) {
         toastr.error(message)
     }
 
     function success(message) {
-        toastr.success(message.msg)
+        toastr.success(message)
     }
     requestApi({
         url: the_url,
@@ -108,6 +91,9 @@ $(document).ready(function () {
         error: error
     });
 })
+.on("click", ".btn-test-login", function () {
+    $('#test_user_login_modal').modal('show')
 
+})
 </script>
 {% endblock %}
